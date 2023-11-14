@@ -1,0 +1,31 @@
+{% extends "budget/layout.html" %}
+
+{% block body %}
+<div class="titles-main-center shadow">
+
+    <span class="font-titles-main-center" id="total-budget">Total Budget</span>
+    <span class="amount-main-center">${{budgetSum}}</span>
+</div>
+<div class="grid3">
+    <div class="canvas-1">
+        <canvas id="canvas1"></canvas>
+    </div>
+    <div class="grid2">
+        {% for budget in budgets %}
+            <div class="titles-main shadow">
+                <span class="vertical-separator" />
+                <span class="font-titles-main" id="{{budget.category}}">{{budget.category}}</span>
+                <div class="contenedor-flex">
+                    <span class="amount-main">${{budget.amount}}</span>
+                    <a href="{% url 'edit_budget' budget.id %}" class="btn btn-primary" style="margin-left:20px; margin-bottom:10px;">Edit</a>
+                </div>
+                <span style="display:none;" id="amount-{{budget.category}}">{{budget.amount}}</span>
+            </div>
+        {%endfor%}
+    </div>
+</div>
+{% if addButton %}
+<a class="btn btn-primary" href="{% url 'add_budget' %}" style="margin-top:20px;">Add Budgets</a>
+{% endif %}
+
+{% endblock %}

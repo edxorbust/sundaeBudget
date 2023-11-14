@@ -1,0 +1,176 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block title %}Sundae's Budget Planner{% endblock %}</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <link href="{% static 'budget/styles.css' %}" rel="stylesheet">
+        <script src="{% static 'budget/script.js' %}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js" integrity="sha512-6HrPqAvK+lZElIZ4mZ64fyxIBTsaX5zAFZg2V/2WT+iKPrFzTzvx6QAsLW2OaLwobhMYBog/+bvmIEEGXi0p1w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                if (document.getElementById('remaining-budget') !== null || document.getElementById('total-budget') !== null ){
+                    var ids = ["amount-Housing", "amount-Public Services", "amount-Food", "amount-Transportation", "amount-Clothing", "amount-Hobbies", "amount-Entertainment", "amount-Other"]
+
+                    var values = {}
+
+                    for ( let i = 0; i < ids.length; i++){
+                        let id = ids[i];
+                        let element = document.getElementById(id);
+
+                        if (element) {
+                            values[i] = element.innerHTML;
+                        }
+                        else {
+                            values[id] = 0;
+                        }
+                    }
+
+                    let myCanvas = document.getElementById("canvas1").getContext("2d");
+                    var chart = new Chart(myCanvas, {
+                        type:"bar",
+                        data:{
+                            labels:["Housing", "Public Services", "Food", "Transportation", "Clothing", "Hobbies", "Entertainment", "Other"],
+                            datasets:[
+                                {
+    
+                                    data:[values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7]],
+                                    backgroundColor:["#66ccff", "#00bfff", "#009fff", "#0080ff", "#0060ff", "#0040ff", "#0020ff", "#0010d9", "#0000b3"]
+
+                                }
+                            ]
+                        },
+                        options: {
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            }
+                        }
+                    });
+                };
+            });
+        </script>
+    </head>
+    <body>
+        <div class="container-index">
+      
+            <div class="d-flex flex-column flex-shrink-0 p-3 bg-light row shadow p-3  bg-white rounded" style="width: 280px;">
+                <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+                <svg class="bi me-2" width="40" height="32"><use xlink:href="{% url 'index' %}"></use></svg>
+                <img width="240px" src="{% static 'logo1.png' %}" />
+                </a>
+                <hr>
+                <ul class="nav nav-pills flex-column mb-auto">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a href="{% url 'index' %}" class="nav-link link-dark itt" aria-current="page" id="expenses-link">
+                        
+                        Expenses
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'budget' %}" class="nav-link link-dark itt" id="budget-link">
+                        
+                        Budget
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'add_expense' %}" class="nav-link link-dark itt" id="add-expense-link">
+                        
+                        Add Expense
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'expense_history' %}" class="nav-link link-dark itt" id="expense-history-link">
+                        
+                        Expense History
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'logout' %}" class="nav-link link-dark itt" id="logout-link">
+                        
+                        Log Out
+                        </a>
+                    </li>
+                    {% else %}
+                    <li>
+                        <a href="{% url 'login' %}" class="nav-link link-dark itt" id="signin-link">
+                        
+                        Sign In
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'register' %}" class="nav-link link-dark itt" id="register-link">
+                        
+                        Register
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <hr>
+                {% if user.is_authenticated %}
+                <div class="dropdown">
+                <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="{% static 'user.png' %}" width="32" height="32" class="rounded-circle me-2">
+                    <strong>{{ user.username }}</strong>
+                </a>
+                <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
+                    <li><a class="dropdown-item" href="{% url 'budget' %}">Budget</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{% url 'logout' %}">Log out</a></li>
+                </ul>
+                </div>
+                {% else %}
+                <div class="dropdown">
+                    <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="static/guest.png" width="32" height="32" class="rounded-circle me-2">
+                        <strong>Guest</strong>
+                    </a>
+                    <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
+                        <li><a class="dropdown-item" href="{% url 'login' %}">Sign In</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'register' %}">Register</a></li>
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+            <div class="w-100">
+                <div>
+                    <nav class="navbar navbar-expand-lg navbar-main mx-4 shadow rounded justify-content-end">
+                        <ul class="navbar-nav mr-auto">
+                            {% if user.is_authenticated %}
+                                <li class="nav-item pr-3">
+                                    <span class="px-2"><img width="50px" src="{% static 'hello.png' %}"/></span>
+                                </li>
+                                <li class="nav-item pr-3">
+                                    <span class="nav-link pt-3">Hello <strong>{{ user.username }}</strong>!</span>
+                                </li>
+                            
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'logout' %}"><button type="button" class="btn btn-primary me-3"><strong>Log Out</strong></button></a>
+                                </li>
+                            {% else %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'login' %}">Log In</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'register' %}">Register</a>
+                                </li>
+                            {% endif %}
+                            </ul>
+                    </nav>
+                </div>
+                <div class="content-middle">
+        {% block body %}
+        {% endblock %}
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

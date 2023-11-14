@@ -1,0 +1,11 @@
+{% extends "budget/layout.html" %}
+
+{% block body %}
+<h3>Expense History</h3>
+<ul class="list-group">
+{% for expense in expensesList %}
+    <li class="list-group-item grid4"><span>Amount: ${{expense.amount}}</span><span>Category: {{expense.category}}</span>  <span>Date: {{expense.date}}<a class="btn btn-secondary" href="{% url 'delete_expense' expense.id %}" style="margin:5px 20px;">x</a></span></li>
+{% endfor %}
+</ul>
+
+{% endblock %}

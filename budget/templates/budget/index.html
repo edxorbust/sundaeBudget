@@ -1,0 +1,82 @@
+{% extends "budget/layout.html" %} 
+{% block body %}
+<div id="index-container">
+    <div class="grid1">
+        <div class="titles-main shadow">
+            <span class="vertical-separator"/>
+            <span class="font-titles-main">Total Expenses</span>
+            <span class="amount-main">${{expenseSum}}</span>
+        </div>
+        <div class="titles-main shadow" id="remaining-div">
+            <span class="vertical-separator" style="background-color:#e03a3a" id="rem-sep"/>
+            <span class="font-titles-main" id="remaining-text">Remaining Budget</span>
+            <span class="amount-main">$<span id="remaining-budget">{{remainingBudget}}<span></span>
+        </div>
+    </div>
+    <div class="grid3">
+        <div class="canvas-1">
+            <canvas id="canvas1"></canvas>
+        </div>
+        <div class="grid2">
+            {% for sum in expenseCatSums %}
+            <div class="titles-main shadow" id="{{sum.category__name}}">
+                <span class="vertical-separator" id="sep-{{sum.category__name}}" />
+                <span class="font-titles-main" id="text-{{sum.category__name}}">{{sum.category__name}}</span>
+                <span class="amount-main">${{sum.total_amount}}</span>
+                <span style="display:none;" id="amount-{{sum.category__name}}">{{sum.total_amount}}</span>
+            </div>
+             {%endfor%}
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle"><strong>WARNING!</strong></h5>
+        </div>
+        <div class="modal-body">
+            <img width="100px" src="static/attention.png"/><span class="font-titles-att">You are out of budget!</span>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="closeButton">Close</button>
+          <a href="{% url 'budget' %}" class="btn btn-primary">Edit Budget</a>
+        </div>
+      </div>
+    </div>
+</div>
+<div class="modal fade" id="exampleModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle"><strong>ALERT!</strong></h5>
+        </div>
+        <div class="modal-body">
+            <img width="100px" src="static/alert.png"/><span class="font-titles-att">Almost out of budget!</span>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="closeButton2">Close</button>
+          <a href="{% url 'budget' %}" class="btn btn-primary">Edit Budget</a>
+        </div>
+      </div>
+    </div>
+</div>
+<script>
+    {% for over in overBudgetCat %}
+        {% for sum in expenseCatSums %}
+            if("{{over}}" === "{{sum.category__name}}"){
+                document.getElementById("{{over}}").style.backgroundColor = '#ef5459';
+                document.getElementById("text-{{over}}").style.color = 'white';
+                document.getElementById("sep-{{over}}").style.backgroundColor = 'white'; 
+                let newDiv = document.createElement('div');
+                const indexContainer = document.getElementById('index-container');
+                newDiv.innerHTML = "Over budget on {{over}} category!";
+                newDiv.classList.add('font-titles-black');
+                newDiv.style.margin = '20px 0px'
+                indexContainer.appendChild(newDiv);
+                
+            }
+        {% endfor %}
+    {% endfor %}
+</script>
+{% endblock %}

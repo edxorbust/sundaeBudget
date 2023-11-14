@@ -1,0 +1,16 @@
+{% extends "budget/layout.html" %}
+
+{% block body %}
+<h3>{{budget.category.name}}</h3>
+<div class="form-regular-div">
+    <form action="{% url 'edit_budget' budget.id %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <input autofocus class="form-control" type="numeric" value="{{budget.amount}}" name="amount" placeholder="Amount">
+        </div>
+        <input class="btn btn-primary" type="submit" value="Save Changes">
+    </form>
+</div>
+
+
+{% endblock %}
